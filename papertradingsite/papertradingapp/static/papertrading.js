@@ -1,11 +1,16 @@
-function mapRows(userData) {
-    const userBalance = JSON.parse(userData)[0];
-    
-    console.log('User Data: ', userBalance)
-}
+const userBalancesJson = document.getElementById('user-balances').textContent.trim();
+const userBalances = JSON.parse(userBalancesJson);
 
-fetch('/papertrading/')
-    .then(response => response.json())
-    .then(mapRows)
-    .catch(error => console.error("Error fetching data: ", error));
+const mapRows = userBalances => {
+    console.log('User Data: ', userBalances);
 
+    const userBalancesContainer = document.getElementById('user-balances-container');
+    userBalances.forEach(userBalance => {
+        const fields = userBalance.fields;
+        const userInfo = document.createElement('div');
+        userInfo.textContent = `ID: ${userBalance.pk}, First Name: ${fields.first_name}, Last Name: ${fields.last_name}, Balance: ${fields.balance}, Portfolio: ${fields.portfolio}`;
+        userBalancesContainer.appendChild(userInfo);
+    });
+};
+
+mapRows(userBalances);

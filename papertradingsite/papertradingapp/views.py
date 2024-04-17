@@ -1,10 +1,8 @@
 from django.shortcuts import render # type: ignore
-from django.http import JsonResponse # type: ignore
-from django.core import serializers # type: ignore
 from .models import UserBalance
-
+from django.core import serializers # type: ignore
 
 def paperTrading(request):
-    userBalance = UserBalance.objects.all()
-    sterialized_data = serializers.serialize('json', userBalance)
-    return JsonResponse(sterialized_data, safe=False)
+    userBalances = UserBalance.objects.all()
+    userBalances_json = serializers.serialize('json', userBalances)
+    return render(request, "papertrading.html", {'userBalances_json': userBalances_json})
