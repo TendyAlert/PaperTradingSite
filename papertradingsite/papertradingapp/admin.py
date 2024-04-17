@@ -1,6 +1,6 @@
-from django.contrib import admin
-from .models import UserBalance, Portfolio
+from django.contrib import admin #type: ignore
+from .models import UserBalance, Stock
 
 # Register your models here.
 admin.site.register(UserBalance)
-admin.site.register(Portfolio)
+admin.site.register(Stock)

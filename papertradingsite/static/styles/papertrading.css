@@ -1,0 +1,23 @@
+body {
+    background-color: lightgray;
+    color: black;
+}
+
+caption {
+    caption-side: bottom;
+    font-weight: bold;
+}
+
+.stocks-table {
+    border-collapse: collapse;
+}
+
+.stocks-table-item {
+    border: 1px solid black;
+    text-align: center;
+}
+
+.user-items {
+    padding: 10px;
+
+}
