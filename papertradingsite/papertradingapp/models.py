@@ -10,10 +10,10 @@ dateFourMonthsAgo = date - delta
     
 class Stock(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    user_balance = models.DecimalField(decimal_places=2, default=2000.00, max_digits=9)
-    stock_ticker = models.CharField(max_length=4)
-    quantity = models.IntegerField(default=0)
-    stock_value = models.DecimalField(decimal_places=2, max_digits=9)
+    user_balance = models.DecimalField(decimal_places=2, default=10000.00, max_digits=9)
+    stock_ticker = models.CharField(default='null', max_length=5)
+    stock_value = models.DecimalField(decimal_places=2, default=0.00, max_digits=9)
+    quantity = models.IntegerField(default=1)
     buy = models.BooleanField(default=False)
     
     def __str__(self):

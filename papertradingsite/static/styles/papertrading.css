@@ -5,22 +5,32 @@ body {
 
 .graph-and-table {
     display: grid;
-    grid-template-columns: 3fr 1fr;
+    grid-template-columns: 2fr 1fr;
     margin: 0 5% 0 5%;
 }
 
 .graph-container {
-    width: fit-content;
-    height: fit-content;
+
+   height: fit-content;
+   margin-right: 10px;
 }
 
 caption {
-    caption-side: bottom;
+    caption-side: top;
     font-weight: bold;
+}
+
+.table-with-info {
+    display: grid;
 }
 
 .stocks-table {
     border-collapse: collapse;
+    height: fit-content;
+    width: fit-content;
+    flex: 35%;
+    margin-top: 20px;
+    justify-self: center;
 }
 
 .stocks-table-item {
@@ -30,5 +40,39 @@ caption {
 
 .user-items {
     padding: 10px;
+}
 
+.stock-info-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    align-items: center;
+}
+
+.stock-info-table {
+    border-collapse: collapse;
+    width: fit-content;
+    height: fit-content;
+}
+
+.stock-info-table-item {
+    border: 1px solid black;
+}
+
+.stock-info {
+    padding: 10px;
+}
+
+.button-container {
+    margin-left: 5%;
+    padding-top: 5px;
+}
+
+.button-container > button {
+    width: 55px;
+    height: 20px;
+    margin: 0 5px 0 5px;
+    border-radius: 10px;
+    border: 1px ridge black;
+    padding-top: 1px;
 }

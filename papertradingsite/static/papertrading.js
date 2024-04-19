@@ -28,7 +28,6 @@ stocks.forEach(stock => {
         <th class="stocks-table-item user-items">${fields.stock_ticker}</th>
         <td class="stocks-table-item user-items">${fields.quantity}</td>
         <td class="stocks-table-item user-items">${fields.stock_value}</td>
-        <td class="stocks-table-item user-items"><input type='checkbox'></td>
     </tr>
     `;
 });
@@ -45,7 +44,9 @@ handleClick = event => {
 }
 
 const buttonContainer = document.getElementById('button-container')
+const stockInfo = document.getElementById('stock-info')
 let buttonHTML = ''
+let infoHTML = ''
 
 const data_keys = Object.keys(data);
 
@@ -62,8 +63,8 @@ const createChart = (name) => {
 
     separatedData = []
 
-    for(let item in data[name]['Open']){
-        tempArr = [item, data[name]['Open'][item]]
+    for(let item in data[name]['Close']){
+        tempArr = [parseInt(item), data[name]['Close'][item]]
         separatedData.push(tempArr)
 }
 
@@ -125,5 +126,16 @@ const createChart = (name) => {
         }]
     });
     
+
+    quantity = data[name]['Volume'][separatedData[separatedData.length -1][0]]
+    value =  separatedData[separatedData.length -1][1]
+
+    infoHTML = `
+        <td class="stock-info-table-item stock-info">${name.toUpperCase()}</td>
+        <td class="stock-info-table-item stock-info">${quantity}</td>
+        <td class="stock-info-table-item stock-info">${value.toFixed(2)}</td>
+    `
+
+    stockInfo.innerHTML = infoHTML;
 }
 

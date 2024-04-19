@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand #type: ignore
-from papertradingapp.models import YFinanceData
+from papertradingapp.models import YFinanceData, Stock
 import yfinance as yf #type: ignore
 from datetime import datetime, timedelta
 import json
@@ -10,10 +10,10 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # Get data for each stock ticker
         date_four_months_ago = datetime.now() - timedelta(weeks=13)
-        aapl_data = yf.Ticker('AAPL').history(start=date_four_months_ago, interval='1d')
-        amd_data = yf.Ticker('AMD').history(start=date_four_months_ago, interval='1d')
-        intc_data = yf.Ticker('INTC').history(start=date_four_months_ago, interval='1d')
-        ibm_data = yf.Ticker('IBM').history(start=date_four_months_ago, interval='1d')
+        aapl_data = yf.Ticker('AAPL').history(start=date_four_months_ago, end = datetime.now(), interval='1d')
+        amd_data = yf.Ticker('AMD').history(start=date_four_months_ago, end = datetime.now(), interval='1d')
+        intc_data = yf.Ticker('INTC').history(start=date_four_months_ago, end = datetime.now(), interval='1d')
+        ibm_data = yf.Ticker('IBM').history(start=date_four_months_ago, end = datetime.now(), interval='1d')
 
         # Save the data in the database
         YFinanceData.objects.create(
