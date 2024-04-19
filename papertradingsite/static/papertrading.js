@@ -4,6 +4,36 @@ const stocks = JSON.parse(stocksJson);
 const dataJson = document.getElementById('stocks-data').textContent.trim();
 const parsedData = JSON.parse(dataJson);
 
+const userBlanceJson = document.getElementById('balance-data').textContent.trim();
+const userBalance = JSON.parse(userBlanceJson);
+
+let userBalanceContainer = document.getElementById('user-balance');
+
+let userBalanceHTML = '';
+
+const userId = userBalance[0].user_id
+
+let userName = ''
+
+
+console.log(userBalance)
+console.log(userId)
+
+fetch(`/api/user/${userId}/`)
+  .then(response => response.json())
+  .then(user => {
+    userName = user.username
+    userBalanceHTML = `
+    <h5> Hello ${userName} your balance is $${userBalance[0]['balance']}</h5>
+    `
+    userBalanceContainer.innerHTML = userBalanceHTML
+  })
+  .catch(error => {
+    console.error('Error fetching user:', error);
+  });
+
+
+
 let data = {}
 let stocks_list = parsedData.map(stock => {
     const fields = stock['fields']
@@ -102,8 +132,8 @@ const createChart = (name) => {
                         y2: 1
                     },
                     stops: [
-                        [0, Highcharts.getOptions().colors[0]],
-                        [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        [0, Highcharts.getOptions().colors[6]],
+                        [1, Highcharts.color(Highcharts.getOptions().colors[6]).setOpacity(0).get('rgba')]
                     ]
                 },
                 marker: {

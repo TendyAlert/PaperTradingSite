@@ -65,6 +65,7 @@ caption {
 
 .stock-info-form {
     display: flex;
+    flex-direction: column;
 }
 
 .button-container {

@@ -14,6 +14,7 @@
             
         </div>
         <div class="table-with-info">
+            <div id="user-balance"></div>
             <table class="stocks-table">
                 <caption>
                     Portfolio
@@ -43,8 +44,12 @@
 
                 <form action="" class="stock-info-form">
                     <label for="ammount">
-                        Input the desired ammount to buy
+                        Input the desired ammount to buy or sell
                         <input type="number" name="ammount" id="ammount">
+                        <select name="buy-sell" id="buy-sell">
+                            <option value="buy">Buy</option>
+                            <option value="slee">Sell</option>
+                        </select>
                     </label>
                 </form>
             </div>
@@ -54,7 +59,8 @@
     </div>
 
     <div id="user-stocks" style="display: none;">{{ stocks_json | safe }}</div>
-    <div id="stocks-data" style="display: none">{{ data_json | safe }}</div>
+    <div id="stocks-data" style="display: none;">{{ data_json | safe }}</div>
+    <div id="balance-data" style="display: none;">{{ balance_json | safe }}</div>
 
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="{% static 'papertrading.js' %}"></script>

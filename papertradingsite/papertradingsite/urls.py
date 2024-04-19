@@ -16,9 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin # type: ignore
 from django.urls import include, path # type: ignore
+from papertradingapp import views
 
 urlpatterns = [
     path('papertrading/', include("papertradingapp.urls")),
     path('accounts/', include('allauth.urls')),
+    path('api/user/<int:user_id>/', views.user_detail_api_view, name='user_detail_api'),
     path('admin/', admin.site.urls),
 ]

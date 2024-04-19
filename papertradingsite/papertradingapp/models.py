@@ -10,7 +10,7 @@ dateFourMonthsAgo = date - delta
     
 class UserBalance(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    blance = models.DecimalField(decimal_places=2, default=10000.00, max_digits=9)
+    balance = models.DecimalField(decimal_places=2, default=10000.00, max_digits=9)
 
     def __str__(self):
         return f"Balance for {self.user.username}"
