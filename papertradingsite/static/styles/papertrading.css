@@ -63,6 +63,10 @@ caption {
     padding: 10px;
 }
 
+.stock-info-form {
+    display: flex;
+}
+
 .button-container {
     margin-left: 5%;
     padding-top: 5px;

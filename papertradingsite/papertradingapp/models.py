@@ -8,11 +8,17 @@ delta = timedelta(weeks=13)
 dateFourMonthsAgo = date - delta
 # Create your models here.
     
+class UserBalance(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    blance = models.DecimalField(decimal_places=2, default=10000.00, max_digits=9)
+
+    def __str__(self):
+        return f"Balance for {self.user.username}"
+
 class Stock(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    user_balance = models.DecimalField(decimal_places=2, default=10000.00, max_digits=9)
     stock_ticker = models.CharField(default='null', max_length=5)
-    stock_value = models.DecimalField(decimal_places=2, default=0.00, max_digits=9)
+    bought_at = models.DecimalField(decimal_places=2, default=0.00, max_digits=9)
     quantity = models.IntegerField(default=1)
     buy = models.BooleanField(default=False)
     

@@ -27,14 +27,14 @@ stocks.forEach(stock => {
     <tr>
         <th class="stocks-table-item user-items">${fields.stock_ticker}</th>
         <td class="stocks-table-item user-items">${fields.quantity}</td>
-        <td class="stocks-table-item user-items">${fields.stock_value}</td>
+        <td class="stocks-table-item user-items">${fields.bough_at}</td>
     </tr>
     `;
 });
 
 stocksContainer.innerHTML = tableHTML;
 
-currentStock = 'aapl'
+let currentStock = 'aapl'
 
 handleClick = event => {
     event.preventDefault();
@@ -139,3 +139,4 @@ const createChart = (name) => {
     stockInfo.innerHTML = infoHTML;
 }
 
+createChart(currentStock)
