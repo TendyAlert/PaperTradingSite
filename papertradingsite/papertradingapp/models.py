@@ -1,10 +1,15 @@
 from django.db import models # type: ignore
 from django.contrib.auth.models import User #type: ignore
+from datetime import datetime, timedelta
+import yfinance as yf #type: ignore
 
+date = datetime.now()
+delta = timedelta(weeks=13)
+dateFourMonthsAgo = date - delta
 # Create your models here.
     
 class Stock(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     user_balance = models.DecimalField(decimal_places=2, default=2000.00, max_digits=9)
     stock_ticker = models.CharField(max_length=4)
     quantity = models.IntegerField(default=0)
@@ -13,3 +18,9 @@ class Stock(models.Model):
     
     def __str__(self):
         return f"Ticker - {self.stock_ticker} - Value - {self.stock_value} - Owned - {self.quantity}"
+    
+class YFinanceData(models.Model):
+    aapl = models.JSONField(default=dict)
+    amd = models.JSONField(default=dict)
+    intc = models.JSONField(default=dict)
+    ibm = models.JSONField(default=dict)

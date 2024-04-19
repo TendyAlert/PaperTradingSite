@@ -1,34 +1,41 @@
+{% extends 'base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Paper Trading</title>
-    <link rel="stylesheet" href="../static/styles/papertrading.css">
-</head>
-<body>
+{% block title %}Paper Trading{% endblock %}
+
+{% block css%}
+    <link rel="stylesheet" href="{% static 'styles/papertrading.css' %}">
+{% endblock %}
+
+{% block content %}
     <h3>Hello you've made it to the trading sim site!</h3>
+    <section class="graph-and-table">
+        <div class="graph-container" id="graph-container">
+            
+        </div>
+        <table class="stocks-table">
+            <caption>
+                These are your owned stocks!
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col" class="stocks-table-item">Stocks</th>
+                    <th scope="col" class="stocks-table-item">Quantity</th>
+                    <th scope="col" class="stocks-table-item">Value</th>
+                    <th scope="col" class="stocks-table-item">Buy/Sell</th>
+                </tr>
+            </thead>
+            <tbody id="stocks-table-body" class="stocks-table-body">
 
-    <table class="stocks-table">
-        <caption>
-            These are your owned stocks!
-        </caption>
-        <thead>
-            <tr>
-                <th scope="col" class="stocks-table-item">Stocks</th>
-                <th scope="col" class="stocks-table-item">Quantity</th>
-                <th scope="col" class="stocks-table-item">Value</th>
-                <th scope="col" class="stocks-table-item">Buy/Sell</th>
-            </tr>
-        </thead>
-        <tbody id="stocks-table-body" class="stocks-table-body">
+            </tbody>
+        </table>
+    </section>
+    <div id="button-container">
+    </div>
 
-        </tbody>
-    </table>
     <div id="user-stocks" style="display: none;">{{ stocks_json | safe }}</div>
+    <div id="stocks-data" style="display: none">{{ data_json | safe }}</div>
 
+    <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="{% static 'papertrading.js' %}"></script>
-</body>
-</html>
+{% endblock %}
