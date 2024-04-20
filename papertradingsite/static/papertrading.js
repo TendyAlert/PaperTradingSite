@@ -12,25 +12,27 @@ let userBalanceContainer = document.getElementById('user-balance');
 let userBalanceHTML = '';
 
 const userId = userBalance[0].user_id
+let startBalance = userBalance[0]['balance']
 
 let userName = ''
 
-
-console.log(userBalance)
-console.log(userId)
-
-fetch(`/api/user/${userId}/`)
+const updateDisplayedBalance = (balance) => {
+    floatBalance = parseFloat(balance)
+    const fixedBalance = floatBalance.toFixed(2);
+    fetch(`/api/user/${userId}/`)
   .then(response => response.json())
   .then(user => {
     userName = user.username
     userBalanceHTML = `
-    <h5> Hello ${userName} your balance is $${userBalance[0]['balance']}</h5>
+    <h4> Hello ${userName} your balance is $${fixedBalance}</h4>
     `
     userBalanceContainer.innerHTML = userBalanceHTML
   })
   .catch(error => {
     console.error('Error fetching user:', error);
   });
+}
+updateDisplayedBalance(startBalance)
 
 
 
@@ -47,22 +49,29 @@ for(let key in data) {
     data[key] = JSON.parse(data[key])
 }
 
-let tableHTML = '';
-
 const stocksContainer = document.getElementById('stocks-table-body');
 
-stocks.forEach(stock => {
-    const fields = stock.fields;
-    tableHTML += `
-    <tr>
-        <th class="stocks-table-item user-items">${fields.stock_ticker}</th>
-        <td class="stocks-table-item user-items">${fields.quantity}</td>
-        <td class="stocks-table-item user-items">${fields.bough_at}</td>
-    </tr>
-    `;
-});
-
-stocksContainer.innerHTML = tableHTML;
+const loadStockPortfolio = () => {
+    fetch("/api/stock_portfolio/")
+    .then(response => response.json())
+    .then(stockPortfolioData => {
+        let tableHTML = '';
+        stockPortfolioData.forEach(stock => {
+            tableHTML += `
+            <tr>
+                <th class="stocks-table-item user-items">${stock.stock_ticker}</th>
+                <td class="stocks-table-item user-items">${stock.quantity}</td>
+                <td class="stocks-table-item user-items">${stock.bought_at}</td>
+            </tr>
+            `;
+        });
+        stocksContainer.innerHTML = tableHTML;
+    })
+    .catch(error => {
+        console.error("Error loading stock portfolio:", error)
+    })
+    
+}
 
 let currentStock = 'aapl'
 
@@ -81,13 +90,14 @@ let infoHTML = ''
 const data_keys = Object.keys(data);
 
 data_keys.forEach(key => {
-    upperKey = key.toUpperCase()
-    buttonHTML += `<button type="button" id="${key}">${upperKey}</button>`
+    buttonHTML += `<button type="button" id="${key}">${key.toUpperCase()}</button>`
 })
 
 buttonContainer.innerHTML = buttonHTML
 
 buttonContainer.addEventListener('click', handleClick)
+
+let value = 0
 
 const createChart = (name) => {
 
@@ -157,7 +167,7 @@ const createChart = (name) => {
     });
     
 
-    quantity = data[name]['Volume'][separatedData[separatedData.length -1][0]]
+    const quantity = data[name]['Volume'][separatedData[separatedData.length -1][0]]
     value =  separatedData[separatedData.length -1][1]
 
     infoHTML = `
@@ -170,3 +180,54 @@ const createChart = (name) => {
 }
 
 createChart(currentStock)
+loadStockPortfolio()
+
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+const handleFormSubmit = (event) => {
+    event.preventDefault()
+
+    const amountField = form.elements['amount']
+    const optionField = form.elements['buy-sell']
+
+    const amount = amountField.value
+    const option = optionField.value
+
+    console.log(option)
+    const cost = value * amount
+
+    if (option == 'buy'){
+        newBalance = startBalance - cost;
+
+        const formData = new FormData();
+        formData.set('user_id', userId)
+        formData.set('stock_ticker', currentStock.toUpperCase())
+        formData.set('cost', value.toFixed(2))
+        formData.set('quantity', parseInt(amount))
+
+        fetch("/create_stock_instance/", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadStockPortfolio()
+
+            updateDisplayedBalance(newBalance)
+        })
+        .catch(error => {
+            console.error("Error creating the stock instance: ", error);
+        }
+        )
+    }
+    
+    amountField.value = ''
+
+}
+
+form = document.getElementById('stock-info-form')
+
+form.addEventListener('submit', handleFormSubmit)

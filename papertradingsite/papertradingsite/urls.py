@@ -22,5 +22,7 @@ urlpatterns = [
     path('papertrading/', include("papertradingapp.urls")),
     path('accounts/', include('allauth.urls')),
     path('api/user/<int:user_id>/', views.user_detail_api_view, name='user_detail_api'),
+    path('api/stock_portfolio/', views.stock_portfolio_api_view, name='stock_protfolio_api'),
+    path('create_stock_instance/', views.create_stock_instance, name='create_stock_instance'),
     path('admin/', admin.site.urls),
 ]

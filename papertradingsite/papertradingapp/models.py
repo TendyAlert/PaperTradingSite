@@ -20,10 +20,9 @@ class Stock(models.Model):
     stock_ticker = models.CharField(default='null', max_length=5)
     bought_at = models.DecimalField(decimal_places=2, default=0.00, max_digits=9)
     quantity = models.IntegerField(default=1)
-    buy = models.BooleanField(default=False)
     
     def __str__(self):
-        return f"Ticker - {self.stock_ticker} - Value - {self.stock_value} - Owned - {self.quantity}"
+        return f"Ticker - {self.stock_ticker} - Bought at - {self.bought_at} - Owned - {self.quantity}"
     
 class YFinanceData(models.Model):
     aapl = models.JSONField(default=dict)

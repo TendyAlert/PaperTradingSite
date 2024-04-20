@@ -42,14 +42,16 @@
                     </tbody>
                 </table>
 
-                <form action="" class="stock-info-form">
+                <form action="" class="stock-info-form" id="stock-info-form">
+                    {% csrf_token %}
                     <label for="ammount">
                         Input the desired ammount to buy or sell
-                        <input type="number" name="ammount" id="ammount">
+                        <input type="number" name="amount" id="amount">
                         <select name="buy-sell" id="buy-sell">
                             <option value="buy">Buy</option>
-                            <option value="slee">Sell</option>
+                            <option value="sell">Sell</option>
                         </select>
+                        <button type="submit" class="submit-button">Submit</button>
                     </label>
                 </form>
             </div>
