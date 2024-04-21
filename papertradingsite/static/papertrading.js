@@ -12,9 +12,19 @@ let userBalanceContainer = document.getElementById('user-balance');
 let userBalanceHTML = '';
 
 const userId = userBalance[0].user_id
-let startBalance = userBalance[0]['balance']
+let currentBalance = parseFloat(userBalance[0].balance)
 
 let userName = ''
+
+
+const createResetButton = () => {
+    resetButton = document.getElementById('reset');
+    if (resetButton) {
+        resetButton.addEventListener('click', handleReset);
+    } else {
+        console.error('Reset button not found.');
+    }
+};
 
 const updateDisplayedBalance = (balance) => {
     floatBalance = parseFloat(balance)
@@ -25,14 +35,16 @@ const updateDisplayedBalance = (balance) => {
     userName = user.username
     userBalanceHTML = `
     <h4> Hello ${userName} your balance is $${fixedBalance}</h4>
+    <button type='button' id='reset' class='reset' >Reset</button>
     `
     userBalanceContainer.innerHTML = userBalanceHTML
+    createResetButton()
   })
   .catch(error => {
     console.error('Error fetching user:', error);
   });
 }
-updateDisplayedBalance(startBalance)
+updateDisplayedBalance(currentBalance)
 
 
 
@@ -76,10 +88,12 @@ const loadStockPortfolio = () => {
 let currentStock = 'aapl'
 
 handleClick = event => {
-    event.preventDefault();
-    id = event.target.id
-    currentStock = id
-    createChart(currentStock)
+    if (event.target.tagName === 'BUTTON' || event.target.parentElement.tagName === 'BUTTON') {
+        event.preventDefault();
+        id = event.target.id
+        currentStock = id
+        createChart(currentStock)
+    }
 }
 
 const buttonContainer = document.getElementById('button-container')
@@ -193,11 +207,10 @@ const handleFormSubmit = (event) => {
     const amount = amountField.value
     const option = optionField.value
 
-    console.log(option)
     const cost = value * amount
 
     if (option == 'buy'){
-        newBalance = startBalance - cost;
+        currentBalance -= cost;
 
         const formData = new FormData();
         formData.set('user_id', userId)
@@ -215,19 +228,103 @@ const handleFormSubmit = (event) => {
         .then(response => response.json())
         .then(data => {
             loadStockPortfolio()
-
-            updateDisplayedBalance(newBalance)
+            updateDisplayedBalance(currentBalance)
         })
         .catch(error => {
             console.error("Error creating the stock instance: ", error);
         }
         )
-    }
-    
-    amountField.value = ''
+    } else if (option == 'sell'){
+        currentBalance += cost
 
+        fetch("/remove_stock_instance/", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({'stock_ticker': currentStock, 'amount': amount})
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadStockPortfolio()
+            updateDisplayedBalance(currentBalance)
+        })
+        .catch(error => {
+            console.error("Error removing the stock instance: ", error)
+        })
+    }
+    fetch(`/api/user_balance/${userId}/`, {
+        method: 'PATCH',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({ 'balance': currentBalance }) 
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to update balance');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Success message or further actions after updating balance
+        console.log('User balance updated successfully:', data);
+    })
+    .catch(error => {
+        console.error('Error updating user balance:', error);
+    });
+
+    amountField.value = ''
 }
 
 form = document.getElementById('stock-info-form')
 
 form.addEventListener('submit', handleFormSubmit)
+
+
+const handleReset = (event) => {
+    event.preventDefault()
+    const DEFAULTBALANCE = 10000.00
+    updateDisplayedBalance(DEFAULTBALANCE)
+
+    fetch(`/api/user_balance/${userId}/`, {
+        method: 'PATCH',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({ 'balance': DEFAULTBALANCE }) 
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to update balance');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Success message or further actions after updating balance
+        console.log('User balance updated successfully:', data);
+    })
+    .catch(error => {
+        console.error('Error updating user balance:', error);
+    });
+
+    fetch(`/delete_all_stocks/${userId}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRFToken': csrftoken
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to delete all stocks')
+        }
+        return response.json()
+    })
+    .then(data => {
+        console.log('Stocks deleted successfully', data)
+        loadStockPortfolio()
+    })
+    .catch(error => {
+        console.error("Error deleting stocks", error)
+    })
+}

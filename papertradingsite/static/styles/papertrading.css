@@ -3,6 +3,24 @@ body {
     color: black;
 }
 
+.user-balance {
+    display: flex;
+    flex-direction: column;
+}
+
+.reset {
+    cursor: pointer;
+    justify-self: center;
+    border-radius: 5px;
+    background-color: red;
+    border-color: darkred;
+}
+
+.reset:hover {
+    background-color: darkred;
+    color: darkgray;
+}
+
 .graph-and-table {
     display: grid;
     grid-template-columns: 2fr 1fr;
@@ -82,10 +100,15 @@ caption {
 }
 
 .button-container > button {
+    cursor: pointer;
     width: 55px;
     height: 20px;
     margin: 0 5px 0 5px;
     border-radius: 10px;
     border: 1px ridge black;
     padding-top: 1px;
+}
+
+.button-container > button:hover {
+    background-color: darkgrey;
 }

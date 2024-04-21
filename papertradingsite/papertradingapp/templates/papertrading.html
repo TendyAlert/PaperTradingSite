@@ -11,10 +11,9 @@
     <h3>Weclome to the Paper Traing Site, click a button to get started!</h3>
     <section class="graph-and-table">
         <div class="graph-container" id="graph-container">
-            
         </div>
         <div class="table-with-info">
-            <div id="user-balance"></div>
+            <div id="user-balance" class="user-balance"></div>
             <table class="stocks-table">
                 <caption>
                     Portfolio
@@ -46,7 +45,7 @@
                     {% csrf_token %}
                     <label for="ammount">
                         Input the desired ammount to buy or sell
-                        <input type="number" name="amount" id="amount">
+                        <input type="number" name="amount" id="amount" required>
                         <select name="buy-sell" id="buy-sell">
                             <option value="buy">Buy</option>
                             <option value="sell">Sell</option>
