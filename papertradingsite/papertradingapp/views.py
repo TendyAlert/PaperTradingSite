@@ -13,11 +13,11 @@ import json
 def delete_all_stocks(request, user_id):
     if request.method =="DELETE":
         try:
+            user = User.objects.get(pk = user_id)
             default_balance = 10000
-            stocks = Stock.objects.filter(user_id=user_id)
+            stocks = Stock.objects.filter(user = user)
             stocks.delete()
 
-            user = User.objects.get(pk = user_id)
             transactionHistory = TransactionHistory.objects.filter(user_id = user_id)
             transactionHistory.delete()
             transactionHistory.create(
@@ -34,8 +34,7 @@ def update_user_balance_api_view(request, user_id):
         try:
             data = json.loads(request.body)
             new_balance = data.get('balance')
-            new_balance = float(new_balance)
-            new_balance = round(new_balance, 2)
+            new_balance = round(float(new_balance), 2)
 
             user_balance = UserBalance.objects.get(user_id = user_id)
             user_balance.balance = new_balance
@@ -55,8 +54,12 @@ def update_user_balance_api_view(request, user_id):
             return JsonResponse({'error': 'User balance not found'}, status=404)
         except json.JSONDecodeError:
             return JsonResponse({'error': 'Invalid JSON data'}, status=400)
+
+        except UserBalance.DoesNotExist:
+            return JsonResponse({'error': 'User balance not found'}, status=404)
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+
 
 def stock_portfolio_api_view(request):
     if request.method == 'GET':
@@ -87,7 +90,7 @@ def create_stock_instance(request):
             bought_at = request.POST.get('cost')
             quantity = request.POST.get('quantity')
 
-            user = User.objects.get(pk=user_id)
+            user = request.user
 
             if not all([user, stock_ticker, bought_at, quantity]):
                 return JsonResponse({'error': 'Missing data'}, status=400)
@@ -111,20 +114,27 @@ def remove_stock_instance(request):
         try:
             data = json.loads(request.body)
             stock_ticker = data.get('stock_ticker')
-            amount_sold = data.get('amount')
+            amount_sold = int(data.get('amount'))
 
-            stock_instance = Stock.objects.get(user=request.user, stock_ticker=stock_ticker)
+            stock_instance = Stock.objects.filter(user=request.user, stock_ticker=stock_ticker.upper()).first()
 
-            if stock_instance.quantity > amount_sold:
-                stock_instance.quantity -= amount_sold
-                stock_instance.save()
+            if stock_instance:
+                if stock_instance.quantity >= amount_sold:
+                    if stock_instance.quantity == amount_sold:
+                        stock_instance.delete()
+                    else:
+                        stock_instance.quantity -= amount_sold
+                        stock_instance.save()
+                    
+                    return JsonResponse({'success': True, 'message': 'Stock instance removed successfully'})
+                else:
+                    return JsonResponse({'error': 'Not enough stocks to sell'}, status=400)
             else:
-                return JsonResponse ({'error': 'Not enough to sell'}, status= 400)
-            return JsonResponse({'success': True, 'message': 'Stock instance removed successfully'})
-        except Stock.DoesNotExist:
-            return JsonResponse({'error': 'Stock not found'}, status=404)
-        
-    return JsonResponse({'error': 'Method not allowed'}, status=405)
+                return JsonResponse({'error': 'Stock not found'}, status=404)
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 @login_required
 def paperTrading(request):

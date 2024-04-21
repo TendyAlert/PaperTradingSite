@@ -198,6 +198,29 @@ loadStockPortfolio()
 
 const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
+const updateDatabaseBalance = (newBalance) => {
+    fetch(`/api/user_balance/${userId}/`, {
+        method: 'PATCH',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({ 'balance': newBalance }) 
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to update balance');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Success message or further actions after updating balance
+        console.log('User balance updated successfully:', data);
+    })
+    .catch(error => {
+        console.error('Error updating user balance:', error);
+    });
+}
+
 const handleFormSubmit = (event) => {
     event.preventDefault()
 
@@ -209,7 +232,11 @@ const handleFormSubmit = (event) => {
 
     const cost = value * amount
 
-    if (option == 'buy'){
+    if (option === 'buy'){
+        if(currentBalance < cost){
+            alert(`You only have $${currentBalance}, and you are trying to spend , ${cost}`)
+            return;}
+
         currentBalance -= cost;
 
         const formData = new FormData();
@@ -229,14 +256,14 @@ const handleFormSubmit = (event) => {
         .then(data => {
             loadStockPortfolio()
             updateDisplayedBalance(currentBalance)
+            updateDatabaseBalance(currentBalance)
         })
         .catch(error => {
             console.error("Error creating the stock instance: ", error);
         }
-        )
+    )
     } else if (option == 'sell'){
         currentBalance += cost
-
         fetch("/remove_stock_instance/", {
             method: 'POST',
             headers: {
@@ -244,35 +271,34 @@ const handleFormSubmit = (event) => {
             },
             body: JSON.stringify({'stock_ticker': currentStock, 'amount': amount})
         })
-        .then(response => response.json())
+        .then(response => {
+            if(!response.ok){
+                throw new Error('Failed to remove stock instance')
+            }
+            return response.json()
+        })
         .then(data => {
-            loadStockPortfolio()
-            updateDisplayedBalance(currentBalance)
+            if (data && data.hasOwnProperty('success')) {
+                // Check if the stock instance was successfully removed
+                if (data.success) {
+                    // Update the UI and balance
+                    loadStockPortfolio();
+                    updateDisplayedBalance(currentBalance);
+                    updateDatabaseBalance(currentBalance);
+                } else {
+                    console.error("Stock instance removal failed:", data.message);
+                    alert("You do not have enough stocks to sell.")
+                }
+        
+        } else {
+            console.error(data.message)
+            return
+        }
         })
         .catch(error => {
             console.error("Error removing the stock instance: ", error)
         })
     }
-    fetch(`/api/user_balance/${userId}/`, {
-        method: 'PATCH',
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        body: JSON.stringify({ 'balance': currentBalance }) 
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to update balance');
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Success message or further actions after updating balance
-        console.log('User balance updated successfully:', data);
-    })
-    .catch(error => {
-        console.error('Error updating user balance:', error);
-    });
 
     amountField.value = ''
 }
