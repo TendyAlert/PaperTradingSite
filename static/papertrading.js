@@ -11,7 +11,7 @@ let userBalanceContainer = document.getElementById('user-balance');
 
 let userBalanceHTML = '';
 
-const userId = userBalance[0].user
+const userId = userBalance[0]['user']
 let currentBalance = parseFloat(userBalance[0].balance)
 
 let userName = ''
