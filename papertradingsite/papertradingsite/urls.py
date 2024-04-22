@@ -19,6 +19,7 @@ from django.urls import include, path # type: ignore
 from papertradingapp import views
 
 urlpatterns = [
+    path('', include('papertradingapp.urls')),
     path('papertrading/', include("papertradingapp.urls")),
     path('api/user/<int:user_id>/', views.user_detail_api_view, name='user_detail_api'),
     path('api/user_balance/<int:user_id>/', views.update_user_balance_api_view, name='update_user_balance_api'),
