@@ -11,13 +11,58 @@ let userBalanceContainer = document.getElementById('user-balance');
 
 let userBalanceHTML = '';
 
-console.log(userBalance)
-console.log(userBalance[0])
 const userId = userBalance[0].user_id
 let currentBalance = parseFloat(userBalance[0].balance)
 
 let userName = ''
 
+
+const handleReset = (event) => {
+    event.preventDefault()
+    const DEFAULTBALANCE = 10000.00
+    updateDisplayedBalance(DEFAULTBALANCE)
+
+    fetch(`/api/user_balance/${userId}/`, {
+        method: 'PATCH',
+        headers: {
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({ 'balance': DEFAULTBALANCE }) 
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to update balance');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Success message or further actions after updating balance
+        console.log('User balance updated successfully:', data);
+    })
+    .catch(error => {
+        console.error('Error updating user balance:', error);
+    });
+
+    fetch(`/delete_all_stocks/${userId}`, {
+        method: 'DELETE',
+        headers: {
+            'X-CSRFToken': csrftoken
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to delete all stocks')
+        }
+        return response.json()
+    })
+    .then(data => {
+        console.log('Stocks deleted successfully', data)
+        loadStockPortfolio()
+    })
+    .catch(error => {
+        console.error("Error deleting stocks", error)
+    })
+}
 
 const createResetButton = () => {
     resetButton = document.getElementById('reset');
@@ -308,51 +353,3 @@ const handleFormSubmit = (event) => {
 form = document.getElementById('stock-info-form')
 
 form.addEventListener('submit', handleFormSubmit)
-
-
-const handleReset = (event) => {
-    event.preventDefault()
-    const DEFAULTBALANCE = 10000.00
-    updateDisplayedBalance(DEFAULTBALANCE)
-
-    fetch(`/api/user_balance/${userId}/`, {
-        method: 'PATCH',
-        headers: {
-            'X-CSRFToken': csrftoken
-        },
-        body: JSON.stringify({ 'balance': DEFAULTBALANCE }) 
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to update balance');
-        }
-        return response.json();
-    })
-    .then(data => {
-        // Success message or further actions after updating balance
-        console.log('User balance updated successfully:', data);
-    })
-    .catch(error => {
-        console.error('Error updating user balance:', error);
-    });
-
-    fetch(`/delete_all_stocks/${userId}`, {
-        method: 'DELETE',
-        headers: {
-            'X-CSRFToken': csrftoken
-        }
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to delete all stocks')
-        }
-        return response.json()
-    })
-    .then(data => {
-        console.log('Stocks deleted successfully', data)
-        loadStockPortfolio()
-    })
-    .catch(error => {
-        console.error("Error deleting stocks", error)
-    })
-}
