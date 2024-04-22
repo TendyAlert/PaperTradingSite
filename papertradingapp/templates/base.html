@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Project 4{% endblock %}</title>
+
+    {% block css %}{% endblock %}
+</head>
+<body style="margin: 0px;">
+    <nav style=
+    "display: grid; 
+    grid-template-columns: 2fr 1fr; 
+    border: 3px ridge black; 
+    border-top: 0px; 
+    background-color: darkgray;">
+        <h2 style="margin-left: 5px;">Paper Trading</h2>
+        <div style="display: flex; flex-direction: row-reverse;">
+            <a href="/accounts/logout/" style="align-self: center; justify-self: flex-end; margin-right: 5px;">Log Out</a>
+            <a href="/papertrading/transaction_history/" style="align-self: center; justify-self: flex-end; margin-right: 5px;" >History</a>
+            <a href="/papertrading/" style="align-self: center; justify-self: flex-end; margin-right: 5px;" >Paper Trading</a>
+        </div>
+    </nav>
+    {% block content %}
+
+    {% endblock %}
+</body>
+</html>

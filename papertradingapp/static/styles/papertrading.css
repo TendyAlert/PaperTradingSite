@@ -1,0 +1,114 @@
+body {
+    background-color: lightgray;
+    color: black;
+}
+
+.user-balance {
+    display: flex;
+    flex-direction: column;
+}
+
+.reset {
+    cursor: pointer;
+    justify-self: center;
+    border-radius: 5px;
+    background-color: red;
+    border-color: darkred;
+}
+
+.reset:hover {
+    background-color: darkred;
+    color: darkgray;
+}
+
+.graph-and-table {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    margin: 0 5% 0 5%;
+}
+
+.graph-container {
+
+   height: fit-content;
+   margin-right: 10px;
+}
+
+caption {
+    caption-side: top;
+    font-weight: bold;
+}
+
+.table-with-info {
+    background-color: darkgray;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stocks-table {
+    border-collapse: collapse;
+    height: fit-content;
+    width: fit-content;
+    flex: 35%;
+    margin-top: 20px;
+    justify-self: center;
+}
+
+.stocks-table-item {
+    border: 1px solid black;
+    text-align: center;
+}
+
+.user-items {
+    padding: 10px;
+}
+
+.stock-info-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+    align-items: center;
+}
+
+.stock-info-table {
+    border-collapse: collapse;
+    width: fit-content;
+    height: fit-content;
+}
+
+.stock-info-table-item {
+    border: 1px solid black;
+}
+
+.stock-info {
+    padding: 10px;
+}
+
+.stock-info-form {
+    display: flex;
+    padding: 10px 40% 0 40%;
+}
+
+.submit-button {
+    justify-self: end;
+}
+
+.button-container {
+    margin-left: 5%;
+    padding-top: 5px;
+}
+
+.button-container > button {
+    cursor: pointer;
+    width: 55px;
+    height: 20px;
+    margin: 0 5px 0 5px;
+    border-radius: 10px;
+    border: 1px ridge black;
+    padding-top: 1px;
+}
+
+.button-container > button:hover {
+    background-color: darkgrey;
+}
