@@ -28,5 +28,6 @@ urlpatterns = [
     path('remove_stock_instance/', views.remove_stock_instance, name='remove_stock_instance'),
     path('delete_all_stocks/<int:user_id>/', views.delete_all_stocks, name='delete_all_stocks'),
     path('accounts/', include('allauth.urls')),
+    path('favicon.ico', views.favicon_view).
     path('admin/', admin.site.urls),
 ]

@@ -7,6 +7,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.http import JsonResponse
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.http import HttpResponseNotFound
 import json
 
 
@@ -160,3 +161,7 @@ def transactionHistory(request):
 def create_transaction_history(sender, instance, created, **kwargs):
     if created:
         TransactionHistory.objects.create(user=instance, balance=10000)
+
+
+def favicon_view(request):
+    return HttpResponseNotFound()
