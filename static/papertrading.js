@@ -240,7 +240,7 @@ const handleFormSubmit = (event) => {
         currentBalance -= cost;
 
         const formData = new FormData();
-        formData.set('user', userId)
+        formData.set('user_id', userId)
         formData.set('stock_ticker', currentStock.toUpperCase())
         formData.set('cost', value.toFixed(2))
         formData.set('quantity', parseInt(amount))
