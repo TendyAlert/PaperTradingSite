@@ -1,1 +1,1 @@
-web: gunicorn papertradingsite.wsgi
+web: gunicorn papertradingsite.papertradingsite.wsgi
